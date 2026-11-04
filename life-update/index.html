@@ -383,8 +383,7 @@ body.sealed .tbtn{color:#f3dfc0;border-color:rgba(243,223,192,.4);background:rgb
 .cl-seal .l{clip-path:polygon(0 0,52% 0,44% 30%,56% 52%,46% 74%,54% 100%,0 100%)}
 .cl-seal .r{clip-path:polygon(52% 0,100% 0,100% 100%,54% 100%,46% 74%,56% 52%,44% 30%)}
 .cl-seal:hover img{transform:scale(1.05)}
-#intro.crack .cl-seal img.l{transform:translate(-40%,30%) rotate(-30deg);opacity:0}
-#intro.crack .cl-seal img.r{transform:translate(40%,34%) rotate(26deg);opacity:0}
+
 #intro.crack .cl-seal{pointer-events:none}
 .cl-seal::after{content:"";position:absolute;inset:-14%;border-radius:50%;border:1.5px solid rgba(233,201,122,.55);animation:ring 2.2s ease-out infinite;pointer-events:none}
 #intro.crack .cl-seal::after{display:none}
@@ -473,9 +472,8 @@ body.sealed .tbtn{color:#f3dfc0;border-color:rgba(243,223,192,.4);background:rgb
   <div class="cl-box">
     <div class="cl-base"></div>
     <div class="cl-inside"></div>
-    <div class="cl-flap"><div class="cl-flapface"></div><div class="cl-title" id="clTitle"></div></div>
-    <div class="cl-seal" id="seal"><img class="l" src="assets/seal.webp" alt=""><img class="r" src="assets/seal.webp" alt=""></div>
-    <div class="cl-hint">break the seal</div>
+    <div class="cl-flap"><div class="cl-flapface"></div><div class="cl-title" id="clTitle"></div><div class="cl-seal" id="seal" title="Open the envelope"><img src="assets/seal.webp" alt=""></div></div>
+    <div class="cl-hint">click the seal to open</div>
   </div>
 </div>
 
@@ -659,10 +657,10 @@ function showClosed(){
 }
 function openEnvelope(){
   if(S.phase==='open'&&!intro.classList.contains('hidden')&&intro.classList.contains('crack'))return;
-  ac();SFX.crack();intro.classList.add('crack');
-  setTimeout(()=>{intro.classList.add('open');SFX.whoosh()},380);
-  setTimeout(()=>{renderScene(true);document.body.classList.remove('sealed');intro.classList.add('gone');scene.classList.add('on');SFX.paper()},1500);
-  setTimeout(()=>{intro.classList.add('hidden');popItems()},2300);
+  ac();SFX.paper();intro.classList.add('crack');
+  setTimeout(()=>{intro.classList.add('open');SFX.whoosh()},120);
+  setTimeout(()=>{renderScene(true);document.body.classList.remove('sealed');intro.classList.add('gone');scene.classList.add('on')},1350);
+  setTimeout(()=>{intro.classList.add('hidden');popItems()},2150);
   S.phase='open';save();
 }
 function reseal(){
@@ -1172,7 +1170,7 @@ function sendForm(msg){
 function sentView(link,to){
   $('#sendBox').innerHTML=`<h3>Sealed for ${esc(to)}</h3><p>Give ${esc(to)} this link. It opens straight to the sealed envelope. No account needed.</p>
   <div class="linkrow"><input type="text" readonly id="sentLink" value="${esc(link)}"><button class="pbtn solid" id="copyLink">Copy</button></div>
-  <ol class="steps"><li>Send the link by text, email, or a note on their desk.</li><li>They click the wax seal to open it.</li></ol>
+  <ol class="steps"><li>Send the link by text, email, or a note on their desk.</li><li>They click the wax seal and the flap lifts open.</li></ol>
   <div class="btnrow" style="justify-content:space-between;margin-top:14px"><a class="pbtn" href="${esc(link)}" target="_blank" rel="noopener" style="text-decoration:none">See what they'll see ↗</a><button class="pbtn" data-close-send>Done</button></div>`;
 }
 $('#sendBtn').onclick=()=>{if(edType)closeEditor();sendForm()};
