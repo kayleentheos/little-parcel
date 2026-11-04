@@ -401,7 +401,9 @@ body.sealed .tbtn{color:#f3dfc0;border-color:rgba(243,223,192,.4);background:rgb
 .sc-hint{font:600 9.5px 'Josefin Sans';letter-spacing:.22em;text-transform:uppercase;opacity:.55;margin-top:6px}
 #envbox{position:absolute;left:208px;top:96px;width:896px;height:1114px;transform-origin:0 0;transform:scale(.652)}
 .env-l{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-#items{position:absolute;inset:0;clip-path:inset(-2000px -2000px 2px -2000px)}
+/* contents only show above the envelope's mouth or inside its walls, so they rise out of the envelope */
+#items,#decor{clip-path:polygon(-2000px -2000px,3000px -2000px,3000px 517px,889px 517px,889px 1104px,7px 1104px,7px 517px,-2000px 517px)}
+#items{position:absolute;inset:0}
 .eitem{position:absolute;transform-origin:50% 50%;transition:transform 1s cubic-bezier(.3,1.3,.45,1),filter .3s;cursor:pointer;filter:drop-shadow(0 10px 12px rgba(30,15,5,.3))}
 .eitem .scaler{position:absolute;left:0;top:0;transform-origin:0 0}
 .eitem.down{transform:translateY(var(--down)) rotate(var(--r)) !important;transition:none}
