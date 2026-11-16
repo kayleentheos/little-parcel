@@ -248,9 +248,10 @@ button{font-family:inherit;color:inherit}
 .nw-ahead{display:flex;flex-direction:column;min-height:0}
 .nw-kick2{display:flex;align-items:center;gap:8px;font:700 8.5px 'Josefin Sans';letter-spacing:.28em;text-transform:uppercase;color:var(--acc)}
 .nw-kick2::before,.nw-kick2::after{content:"";flex:1;border-top:1px solid #1d1a17}
-.nw-bh{font:italic 900 25px/1.05 'Playfair Display';margin:4px 0 2px;text-align:left}
-.nw-deck{font:italic 500 13px/1.2 'Cormorant Garamond';margin-bottom:6px;border-bottom:1px solid #1d1a17;padding-bottom:5px}
-.nw-bt{flex:1;min-height:0;font-size:9.6px;line-height:1.38;column-count:3;column-fill:auto;column-gap:14px;column-rule:1px solid rgba(29,26,23,.35);text-align:left;hyphens:manual;overflow:hidden}
+.nw-hrow{margin:3px 0 6px;border-bottom:1px solid #1d1a17;padding-bottom:4px}
+.nw-bh{font:italic 900 23px/1.05 'Playfair Display';text-align:left}
+.nw-deck{font:italic 500 12.5px/1.2 'Cormorant Garamond';margin-top:1px}
+.nw-bt{flex:1;min-height:0;font-size:11px;line-height:1.38;text-align:justify;overflow:hidden}
 .nw-bt .tf{display:block !important;white-space:pre-wrap;overflow-wrap:break-word}
 .nw-last{border:1.5px solid #1d1a17;outline:1px solid #1d1a17;outline-offset:2px;margin:3px;padding:7px 9px;display:flex;flex-direction:column;text-align:center;min-height:0;background:rgba(255,255,255,.18)}
 .nw-last h5{margin:0;font:700 10px 'Josefin Sans';letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid #1d1a17;padding-bottom:4px}
@@ -604,9 +605,9 @@ function meta(p){
    'news.rsub':{l:'Subhead',ph:'Reported',max:18},
    'news.right':{nl:1,l:'Second story',ph:newsIdea.right,max:900,multi:1},
    'news.bhead':{l:'Headline',ph:'Looking Ahead',max:30},
-   'news.bottom':{nl:1,l:'Last story',ph:newsIdea.bottom,max:520,multi:1},
+   'news.bottom':{nl:1,l:'Last story',ph:newsIdea.bottom,max:600,multi:1},
    'news.bkick':{l:'Kicker',ph:'Next Month',max:22},
-   'news.bdeck':{l:'Subhead',ph:'Plans, hopes, and a few things on the calendar',max:60},
+   'news.bdeck':{l:'Subhead',ph:'Plans, hopes, and a few things on the calendar',max:80},
    'news.lastword':{l:'The Last Word',ph:'A little message to everyone reading…',max:120,multi:1}
   };
   if(M[p])return M[p];
@@ -807,7 +808,7 @@ function rNews(p,ed){
      <div class="nw-col"><div class="nw-photo" data-upload="news.photo" style="${p.photo?`background-image:url(${p.photo})`:''}">${p.photo?'':(ed?'+ add a photo':'')}</div><div class="nw-rh">${tf('news.rhead',ed)}</div><div class="nw-rh2">${tf('news.rsub',ed)}</div>${tf('news.right',ed,'fit')}</div>
    </div>
    <div class="nw-bottom">
-     <div class="nw-ahead"><div class="nw-kick2">${tf('news.bkick',ed)}</div><div class="nw-bh">${tf('news.bhead',ed)}</div><div class="nw-deck">${tf('news.bdeck',ed)}</div><div class="nw-bt">${tf('news.bottom',ed)}</div></div>
+     <div class="nw-ahead"><div class="nw-kick2">${tf('news.bkick',ed)}</div><div class="nw-hrow"><div class="nw-bh">${tf('news.bhead',ed)}</div><div class="nw-deck">${tf('news.bdeck',ed)}</div></div><div class="nw-bt">${tf('news.bottom',ed,'fit')}</div></div>
      <div class="nw-last"><h5>The Last Word</h5><div class="nw-lastmsg">${tf('news.lastword',ed)}</div><div class="nw-sig">— ${esc(S.env.name||'the editor')}</div></div>
      <div class="nw-foot"><span>${esc(S.news.paper||'Theoskids Chronicles')}</span><span>Printed with love</span><span>Continued in the next envelope</span></div>
    </div>
@@ -834,7 +835,7 @@ function fitLast(root){
 function fitNews(root){fitLast(root);
   (root||document).querySelectorAll('.np-paper .fit').forEach(el=>{
     const box=el.closest('.nw-col,.nw-bt');if(!box)return;
-    let lo=6,hi=64;
+    let lo=6,hi=box.classList.contains('nw-bt')?14:64;
     const ok=()=>box.scrollHeight<=box.clientHeight+1&&box.scrollWidth<=box.clientWidth+1;
     for(let i=0;i<14;i++){const mid=(lo+hi)/2;el.style.fontSize=mid+'px';if(ok())lo=mid;else hi=mid}
     el.style.fontSize=(Math.floor(lo*10)/10)+'px';
@@ -953,7 +954,7 @@ function renderPanel(){
 function refresh(){if(edType){renderPreview(false);renderPanel()}}
 
 /* ---------------- inline editing ---------------- */
-function inlineSet(el){const p=el.dataset.path,m=meta(p);let v=m.multi?el.innerText.replace(/\n{3,}/g,'\n\n'):el.innerText.replace(/\n/g,' ');if(v.length>(m.max||200)){v=v.slice(0,m.max);el.innerText=v}setP(p,v.trim()?v:'');saveSoon();
+function inlineSet(el){const p=el.dataset.path,m=meta(p);let v=m.multi?el.innerText.replace(/\n{3,}/g,'\n\n'):el.innerText.replace(/\n/g,' ');if(v.length>(m.max||200))v=v.slice(0,m.max);setP(p,v.trim()?v:'');saveSoon();
   const inp=document.querySelector(`#panel input[data-bind="${p}"]`);if(inp&&document.activeElement!==inp)inp.value=v;
   if(p==='env.title'||p==='env.name')renderIntroTitle();
   if(el.classList.contains('fit')||p==='news.lastword')fitNews($('#pvInner'));}
@@ -962,6 +963,11 @@ document.addEventListener('input',e=>{
   if(el.classList&&el.classList.contains('ie')){inlineSet(el);return}
   if(el.dataset&&el.dataset.color){setP(el.dataset.color,el.value);saveSoon();const bd=document.querySelector('#pvInner .pc-bd');if(bd)bd.style.backgroundColor=el.value;return}
   if(el.dataset&&el.dataset.bind){const p=el.dataset.bind;setP(p,el.value);saveSoon();const sp=document.querySelector(`#pvInner [data-path="${p}"]`);if(sp){sp.innerText=el.value;if(sp.classList.contains('fit')||p==='news.lastword')fitNews($('#pvInner'))}return}
+});
+document.addEventListener('beforeinput',e=>{
+  const el=e.target;if(!(el.classList&&el.classList.contains('ie'))||!e.inputType.startsWith('insert'))return;
+  const m=meta(el.dataset.path),sel=getSelection(),selLen=sel&&sel.rangeCount?sel.toString().length:0;
+  if(el.innerText.length-selLen>=(m.max||200)){e.preventDefault();toast('That spot is full — '+(m.max||200)+' characters max.')}
 });
 document.addEventListener('keydown',e=>{
   const el=e.target;
