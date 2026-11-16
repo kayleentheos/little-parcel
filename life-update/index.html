@@ -250,11 +250,12 @@ button{font-family:inherit;color:inherit}
 .nw-kick2::before,.nw-kick2::after{content:"";flex:1;border-top:1px solid #1d1a17}
 .nw-bh{font:italic 900 25px/1.05 'Playfair Display';margin:4px 0 2px;text-align:left}
 .nw-deck{font:italic 500 13px/1.2 'Cormorant Garamond';margin-bottom:6px;border-bottom:1px solid #1d1a17;padding-bottom:5px}
-.nw-bt{flex:1;min-height:0;font-size:9.6px;line-height:1.38;column-count:3;column-gap:14px;column-rule:1px solid rgba(29,26,23,.35);text-align:justify;hyphens:auto;overflow:hidden}
-.nw-bt::first-letter{font:900 26px/.8 'Playfair Display';float:left;margin:2px 4px 0 0;color:var(--acc)}
+.nw-bt{flex:1;min-height:0;font-size:9.6px;line-height:1.38;column-count:3;column-fill:auto;column-gap:14px;column-rule:1px solid rgba(29,26,23,.35);text-align:left;hyphens:manual;overflow:hidden}
+.nw-bt .tf{display:block !important;white-space:pre-wrap;overflow-wrap:break-word}
 .nw-last{border:1.5px solid #1d1a17;outline:1px solid #1d1a17;outline-offset:2px;margin:3px;padding:7px 9px;display:flex;flex-direction:column;text-align:center;min-height:0;background:rgba(255,255,255,.18)}
 .nw-last h5{margin:0;font:700 10px 'Josefin Sans';letter-spacing:.24em;text-transform:uppercase;border-bottom:1px solid #1d1a17;padding-bottom:4px}
-.nw-lastmsg{flex:1;font:400 17px/1.15 'Caveat';color:#1d1a17;padding:6px 0 2px;overflow:hidden}
+.nw-lastmsg{flex:1;min-height:0;font:400 17px/1.15 'Caveat';color:#1d1a17;padding:6px 0 2px;overflow:hidden}
+.nw-lastmsg .tf{display:block !important}
 .nw-sig{font:600 8px 'Josefin Sans';letter-spacing:.2em;text-transform:uppercase}
 .nw-foot{grid-column:1/3;display:flex;justify-content:space-between;border-top:2.5px solid #1d1a17;margin-top:7px;padding-top:4px;font:600 7.5px 'Josefin Sans';letter-spacing:.2em;text-transform:uppercase}
 
@@ -824,7 +825,13 @@ function openEditor(t){
 }
 function closeEditor(){if(document.activeElement)document.activeElement.blur();edType=null;cdPlaying=false;$('#editor').classList.remove('on');renderScene(false);SFX.paper()}
 /* newspaper stories grow or shrink so each column is always full */
-function fitNews(root){
+function fitLast(root){
+  (root||document).querySelectorAll('.np-paper .nw-lastmsg').forEach(box=>{
+    const el=box.querySelector('.tf');if(!el)return;let f=17;el.style.fontSize=f+'px';
+    while(f>8&&box.scrollHeight>box.clientHeight+1){f-=.5;el.style.fontSize=f+'px'}
+  });
+}
+function fitNews(root){fitLast(root);
   (root||document).querySelectorAll('.np-paper .fit').forEach(el=>{
     const box=el.closest('.nw-col,.nw-bt');if(!box)return;
     let lo=6,hi=64;
@@ -949,12 +956,12 @@ function refresh(){if(edType){renderPreview(false);renderPanel()}}
 function inlineSet(el){const p=el.dataset.path,m=meta(p);let v=m.multi?el.innerText.replace(/\n{3,}/g,'\n\n'):el.innerText.replace(/\n/g,' ');if(v.length>(m.max||200)){v=v.slice(0,m.max);el.innerText=v}setP(p,v.trim()?v:'');saveSoon();
   const inp=document.querySelector(`#panel input[data-bind="${p}"]`);if(inp&&document.activeElement!==inp)inp.value=v;
   if(p==='env.title'||p==='env.name')renderIntroTitle();
-  if(el.classList.contains('fit'))fitNews($('#pvInner'));}
+  if(el.classList.contains('fit')||p==='news.lastword')fitNews($('#pvInner'));}
 document.addEventListener('input',e=>{
   const el=e.target;
   if(el.classList&&el.classList.contains('ie')){inlineSet(el);return}
   if(el.dataset&&el.dataset.color){setP(el.dataset.color,el.value);saveSoon();const bd=document.querySelector('#pvInner .pc-bd');if(bd)bd.style.backgroundColor=el.value;return}
-  if(el.dataset&&el.dataset.bind){const p=el.dataset.bind;setP(p,el.value);saveSoon();const sp=document.querySelector(`#pvInner [data-path="${p}"]`);if(sp){sp.innerText=el.value;if(sp.classList.contains('fit'))fitNews($('#pvInner'))}return}
+  if(el.dataset&&el.dataset.bind){const p=el.dataset.bind;setP(p,el.value);saveSoon();const sp=document.querySelector(`#pvInner [data-path="${p}"]`);if(sp){sp.innerText=el.value;if(sp.classList.contains('fit')||p==='news.lastword')fitNews($('#pvInner'))}return}
 });
 document.addEventListener('keydown',e=>{
   const el=e.target;
